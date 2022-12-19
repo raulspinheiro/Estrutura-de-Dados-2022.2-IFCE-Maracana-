@@ -1,0 +1,59 @@
+import 'dart:io';
+
+void main() {
+  // Lê os elementos da array do usuário
+  print("Digite os elementos da array, separados por espaço:");
+  var input = stdin.readLineSync();
+  List<int> array = input.split(' ').map(int.parse).toList();
+
+  // Implementa o algoritmo Heapsort
+  heapSort(array);
+
+  // Exibe o resultado no console
+  print(array);
+}
+
+void heapSort(List<int> array) {
+  // Constroi o heap
+  int n = array.length;
+  for (int i = n ~/ 2 - 1; i >= 0; i--) {
+    heapify(array, n, i);
+  }
+
+  // Extrai um elemento por vez do heap
+  for (int i = n - 1; i >= 0; i--) {
+    // Move o elemento atual para o final
+    int temp = array[0];
+    array[0] = array[i];
+    array[i] = temp;
+
+    // Mantém a propriedade de heap para o restante da array
+    heapify(array, i, 0);
+  }
+}
+
+void heapify(List<int> array, int n, int i) {
+  int largest = i; // Inicializa a raiz como o maior elemento
+  int l = 2 * i + 1; // Esquerda = 2*i + 1
+  int r = 2 * i + 2; // Direita = 2*i + 2
+
+  // Verifica se o filho esquerdo é maior que a raiz
+  if (l < n && array[l] > array[largest]) {
+    largest = l;
+  }
+
+  // Verifica se o filho direito é maior que a raiz
+  if (r < n && array[r] > array[largest]) {
+    largest = r;
+  }
+
+  // Se a raiz não for o maior elemento, troca a raiz pelo maior elemento
+  if (largest != i) {
+    int temp = array[i];
+    array[i] = array[largest];
+    array[largest] = temp;
+
+    // Recursivamente mantém a propriedade de heap na sub-árvore
+    heapify(array, n, largest);
+  }
+}
