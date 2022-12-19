@@ -77,7 +77,7 @@ void main() {
   b.add(9);
   b.add(2);
 
-  // Multiply as listas
+  // Multiplicando as listas
   DLList result = multiply(a, b);
 
   // Imprimir o resultado
