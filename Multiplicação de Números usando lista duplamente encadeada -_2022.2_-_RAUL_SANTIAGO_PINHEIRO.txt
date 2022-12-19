@@ -1,0 +1,87 @@
+import 'dart:collection';
+
+// Classe de nó da lista duplamente encadeada
+class DLLNode {
+  int value;
+  DLLNode next;
+  DLLNode prev;
+
+  DLLNode(this.value, {this.next, this.prev});
+}
+
+// Classe de lista duplamente encadeada
+class DLList {
+  DLLNode head;
+  DLLNode tail;
+  int length;
+
+  DLList(this.head, this.tail, this.length);
+
+  // Método para adicionar um novo nó no final da lista
+  void add(int value) {
+    DLLNode newNode = DLLNode(value, prev: tail);
+    if (tail != null) tail.next = newNode;
+    tail = newNode;
+    if (head == null) head = newNode;
+    length++;
+  }
+
+  // Método para remover o último nó da lista
+  void removeLast() {
+    if (tail == null) return;
+    if (tail.prev != null) tail.prev.next = null;
+    tail = tail.prev;
+    if (tail == null) head = null;
+    length--;
+  }
+}
+
+// Método para multiplicar duas listas duplamente encadeadas usando divisão longa
+DLList multiply(DLList a, DLList b) {
+  DLList result = DLList(null, null, 0);
+  DLLNode currentA = a.tail;
+  int carry = 0;
+
+  while (currentA != null) {
+    DLLNode currentB = b.tail;
+    int partialSum = 0;
+    int placeValue = 0;
+    while (currentB != null) {
+      int product = currentA.value * currentB.value;
+      int digitSum = product % 10 + carry;
+      carry = product ~/ 10;
+      partialSum += digitSum * pow(10, placeValue);
+      placeValue++;
+      currentB = currentB.prev;
+    }
+    if (carry > 0) partialSum += carry * pow(10, placeValue);
+    result.add(partialSum);
+    currentA = currentA.prev;
+  }
+
+  return result;
+}
+
+void main() {
+  // Criando duas listas de teste
+  
+  DLList a = DLList(null, null, 0);
+  // Primeiro número para a multiplicação por longa divisão, 716
+  a.add(7);
+  a.add(1);
+  a.add(6);
+  
+  DLList b = DLList(null, null, 0);
+  // Segundo número para a multiplicação por longa divisão, 592
+  b.add(5);
+  b.add(9);
+  b.add(2);
+
+  // Multiply as listas
+  DLList result = multiply(a, b);
+
+  // Imprimir o resultado
+  DLLNode current = result.tail;
+  while (current != null) {
+    print(current.value);
+    current = current.prev
