@@ -1,0 +1,84 @@
+import 'dart:io';
+
+void main() {
+  // Pedir ao usuário para digitar uma expressão matemática infixada
+  print("Digite uma expressão matemática infixada: ");
+  String infix = stdin.readLineSync();
+
+  // Converte a expressão infixada para pós-fixada
+  String postfix = infixToPostfix(infix);
+
+  // Avalia a expressão pós-fixada e exibe o resultado
+  int result = evaluatePostfix(postfix);
+  print("Resultado: $result");
+}
+
+// Converte uma expressão matemática infixada para pós-fixada
+String infixToPostfix(String infix) {
+  // Cria uma pilha para armazenar os operadores
+  Stack<String> stack = Stack();
+
+  // Cria uma StringBuilder para construir a expressão pós-fixada
+  StringBuilder postfix = StringBuilder();
+
+  // Percorre cada caractere da expressão infixada
+  for (int i = 0; i < infix.length; i++) {
+    String token = infix[i];
+
+    // Se o token é um operando, adiciona-o ao final da expressão pós-fixada
+    if (isOperand(token)) {
+      postfix.write(token);
+    }
+    // Se o token é um parêntese esquerdo, empilha-o
+    else if (token == '(') {
+      stack.push(token);
+    }
+    // Se o token é um parêntese direito, desempilha todos os operadores até encontrar um parêntese esquerdo
+    else if (token == ')') {
+      while (stack.isNotEmpty && stack.top != '(') {
+        postfix.write(stack.pop());
+      }
+      stack.pop();
+    }
+    // Se o token é um operador, desempilha todos os operadores com maior ou igual precedência e empilha o token
+    else {
+      while (stack.isNotEmpty && precedence(stack.top) >= precedence(token)) {
+        postfix.write(stack.pop());
+      }
+      stack.push(token);
+    }
+  }
+
+  // Desempilha todos os operadores restantes
+  while (stack.isNotEmpty) {
+    postfix.write(stack.pop());
+  }
+
+  // Retorna a expressão pós-fixada como uma string
+  return postfix.toString();
+}
+
+// Avalia uma expressão matemática pós-fixada
+double evaluatePostfix(List<String> postfix) {
+
+  // Cria uma pilha para armazenar os operandos
+  Stack<double> stack = new Stack<double>();
+
+  // Percorre cada token da expressão pós-fixada
+  for (String token in postfix) {
+    // Se o token for um operador, retira os dois operandos mais recentes da pilha
+    if (isOperator(token)) {
+      double operand2 = stack.pop();
+      double operand1 = stack.pop();
+
+      // Executa a operação e empilha o resultado
+      stack.push(evaluate(token, operand1, operand2));
+    } else {
+      // Se o token for um operando, empilha-o
+      stack.push(double.parse(token));
+    }
+  }
+
+  // O resultado final é o único valor na pilha
+  return stack.pop();
+}
