@@ -1,0 +1,42 @@
+import 'dart:io';
+
+void main() {
+  // Lê a expressão pós-fixada do teclado
+  print("Digite a expressão pós-fixada:");
+  String expressao = stdin.readLineSync();
+
+  // Cria uma pilha para armazenar os operandos
+  var pilha = [];
+
+  // Percorre cada token da expressão
+  for (String token in expressao.split(" ")) {
+    // Se o token for um operador, retira os dois últimos elementos da pilha,
+    // realiza a operação e armazena o resultado na pilha
+    if (token == "+") {
+      int operando1 = pilha.removeLast();
+      int operando2 = pilha.removeLast();
+      pilha.add(operando1 + operando2);
+    } else if (token == "-") {
+      int operando1 = pilha.removeLast();
+      int operando2 = pilha.removeLast();
+      pilha.add(operando1 - operando2);
+    } else if (token == "*") {
+      int operando1 = pilha.removeLast();
+      int operando2 = pilha.removeLast();
+      pilha.add(operando1 * operando2);
+    } else if (token == "/") {
+      int operando1 = pilha.removeLast();
+      int operando2 = pilha.removeLast();
+      pilha.add(operando1 / operando2);
+    } else {
+      // Se o token não for um operador, adiciona ele à pilha como um operando
+      pilha.add(int.parse(token));
+    }
+  }
+
+  // O resultado final estará no topo da pilha
+  int resultado = pilha.removeLast();
+
+  // Exibe o resultado no console
+  print("Resultado: $resultado");
+}
